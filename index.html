@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#151827">
+  <title>KAI AI</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <style>
+    :root { color-scheme: dark; --bg:#101321; --panel:#191e30; --panel2:#222940; --text:#f4f5fb; --muted:#aab2c8; --accent:#9b8cff; }
+    * { box-sizing:border-box }
+    body { margin:0; min-height:100vh; background:radial-gradient(circle at 15% 0%,#28234a 0,transparent 38%),var(--bg); color:var(--text); font:16px system-ui,-apple-system,Segoe UI,sans-serif; display:flex; justify-content:center; }
+    .app { width:min(100%,900px); min-height:100vh; display:flex; flex-direction:column; padding:18px; }
+    header { display:flex; align-items:center; gap:12px; padding:10px 4px 18px; border-bottom:1px solid #ffffff18; }
+    .avatar { width:48px;height:48px;border-radius:16px;background:linear-gradient(135deg,#9b8cff,#4dc7bd);display:grid;place-items:center;font-size:25px;font-weight:800;color:#11152a; }
+    h1 { font-size:20px;margin:0;letter-spacing:.4px }
+    .status { color:#83e0b5;font-size:12px;margin-top:3px }
+    .tag { margin-left:auto;border:1px solid #ffffff22;color:var(--muted);border-radius:99px;padding:6px 10px;font-size:11px }
+    main { flex:1; display:flex; flex-direction:column; gap:14px; padding:22px 2px; }
+    .welcome { background:linear-gradient(135deg,#242b46,#1b2033); border:1px solid #ffffff16; padding:18px;border-radius:20px; }
+    .welcome h2 { margin:0 0 7px;font-size:19px }
+    .welcome p { color:var(--muted);margin:0;line-height:1.5;font-size:14px }
+    #messages { display:flex; flex-direction:column; gap:12px; }
+    .msg { max-width:min(85%,650px); padding:12px 15px; border-radius:18px; line-height:1.5; white-space:pre-wrap; overflow-wrap:anywhere; }
+    .bot { align-self:flex-start;background:var(--panel2);border:1px solid #ffffff12;border-bottom-left-radius:5px }
+    .user { align-self:flex-end;background:#6558b8;border-bottom-right-radius:5px }
+    .hint { color:var(--muted);font-size:12px;text-align:center;padding:8px }
+    .composer { position:sticky;bottom:0;background:#101321eF;padding:12px 0 max(12px,env(safe-area-inset-bottom)); }
+    .inputrow { display:flex;gap:9px;background:var(--panel);border:1px solid #ffffff20;border-radius:18px;padding:8px;align-items:flex-end; }
+    textarea { flex:1;resize:none;min-height:44px;max-height:130px;border:0;outline:0;background:transparent;color:var(--text);font:inherit;padding:10px 8px; }
+    button { border:0;cursor:pointer;color:white;background:#7668d6;border-radius:13px;padding:12px 15px;font-weight:650; }
+    button:active { transform:scale(.97) }
+    .small { background:var(--panel2);padding:11px 13px; }
+    footer { text-align:center;color:#8790a8;font-size:11px;padding:6px 0 2px; }
+    @media(min-width:700px){ .app{padding:24px 30px} main{padding:28px 4px} }
+  </style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="avatar">K</div>
+    <div><h1>KAI AI</h1><div class="status">● Giao diện trợ lý cá nhân</div></div>
+    <div class="tag">BẢN ĐẦU TIÊN</div>
+  </header>
+  <main>
+    <section class="welcome" id="welcome">
+      <h2>Ê ní, Kai đây =)))</h2>
+      <p>Đây là giao diện KAI AI chạy được trên điện thoại và máy tính. Mày có thể thử khung chat; để Kai trả lời bằng AI thật cần kết nối máy chủ an toàn.</p>
+    </section>
+    <div id="messages" aria-live="polite"></div>
+    <div class="hint" id="hint">Gửi thử một tin nhắn bên dưới nhé.</div>
+  </main>
+  <section class="composer">
+    <div class="inputrow">
+      <textarea id="prompt" rows="1" placeholder="Nhắn gì đó cho Kai..." aria-label="Tin nhắn"></textarea>
+      <button id="send" aria-label="Gửi tin nhắn">Gửi</button>
+    </div>
+    <footer>Nguyên mẫu giao diện · Chưa kết nối mô hình AI hoặc lưu dữ liệu lên máy chủ</footer>
+  </section>
+</div>
+<script>
+const input = document.getElementById('prompt');
+const messages = document.getElementById('messages');
+const hint = document.getElementById('hint');
+const welcome = document.getElementById('welcome');
+
+function addMessage(text, who) {
+  const el = document.createElement('div');
+  el.className = 'msg ' + who;
+  el.textContent = text;
+  messages.appendChild(el);
+  el.scrollIntoView({behavior:'smooth',block:'end'});
+}
+function send() {
+  const value = input.value.trim();
+  if (!value) return;
+  welcome.style.display = 'none';
+  hint.style.display = 'none';
+  addMessage(value, 'user');
+  input.value = '';
+  input.style.height = '44px';
+  addMessage('Kai đã nhận được tin nhắn. Đây hiện là bản giao diện thử nghiệm; muốn trả lời thông minh như ChatGPT, cần nối ứng dụng với một máy chủ AI và bảo vệ khóa API ở phía máy chủ.', 'bot');
+}
+document.getElementById('send').addEventListener('click', send);
+input.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); }
+});
+input.addEventListener('input', () => {
+  input.style.height = '44px';
+  input.style.height = Math.min(input.scrollHeight,130) + 'px';
+});
+if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+}
+</script>
+</body>
+</html>

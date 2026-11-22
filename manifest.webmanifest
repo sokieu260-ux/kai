@@ -1,0 +1,9 @@
+{
+  "name": "KAI AI",
+  "short_name": "KAI AI",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#101321",
+  "theme_color": "#151827",
+  "description": "Giao diện trợ lý cá nhân KAI AI"
+}
